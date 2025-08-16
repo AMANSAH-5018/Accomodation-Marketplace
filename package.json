@@ -1,9 +1,10 @@
 {
   "name": "air-bnb",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +17,9 @@
     "express-ejs-layouts": "^2.5.1",
     "mate": "^0.21.0",
     "method-override": "^3.0.0",
-    "mongoose": "^8.16.5",
+    "mongoose": "^8.16.5"
+  },
+  "devDependencies": {
     "nodemon": "^3.1.10"
   }
 }
