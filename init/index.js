@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 const initData = require('./data.js'); // Importing data from data.js
 const Listing = require('../models/listing.js'); // Importing the Listing model
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const env = require("dotenv");
+env.config();
+const MONGO_URL = process.env.MONGO_URL;
+
+// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 main().then(() => {
     console.log("Database connection established.");
 }).catch(err => {
