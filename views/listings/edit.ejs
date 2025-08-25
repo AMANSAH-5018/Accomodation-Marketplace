@@ -14,13 +14,11 @@
       <div class="col-8 offset-2">
         <h3>Edit Your Listing :</h3>
         <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" class="needs-validation" novalidate>
-
           <div class="mb-3">
             <label for="title" class="form-label">Title:</label>
             <input type="text" class="form-control" name="listing[title]" value="<%= listing.title %>" required />
             <div class="valid-feedback">Great! Title looks good.</div>
           </div>
-
 
           <div class="row">
             <div class="mb-3 col-md-4">
@@ -36,13 +34,11 @@
             </div>
           </div>
 
-
           <div class="mb-3">
             <label for="location" class="form-label">Location:</label>
             <input type="text" class="form-control" name="listing[location]" value="<%= listing.location %>" required />
             <div class="invalid-feedback">Please enter the valid location.</div>
           </div>
-
 
           <div class="mb-3">
             <label for="image" class="form-label">Image Link:</label>
@@ -50,10 +46,10 @@
             <div class="invalid-feedback">Image link should be proper.</div>
           </div>
 
-
           <div class="mb-3">
             <label for="description" class="form-label">Description:</label>
-            <textarea class="form-control" name="listing[description]" required><%= listing.description %></textarea>
+            <textarea class="form-control" name="listing[description]" required>
+<%= listing.description %></textarea>
             <div class="invalid-feedback">Please give a short description.</div>
           </div>
 
@@ -63,7 +59,6 @@
     </div>
 
     <!-- <a href="/listings/<%= listing._id %>">Back to Listing Details</a> -->
-
 
     <script src="/js/script.js"></script>
 </body>

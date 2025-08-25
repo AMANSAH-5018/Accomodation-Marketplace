@@ -11,14 +11,13 @@
   <body>
     <!-- <h1>Welcome to AIR BNB</h1> -->
     <h2>All Listings</h2>
-
     <!-- <form method="GET" action="/listings/new">
     <button>Create New Listing</button>
   </form> -->
     <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
       <% for (let listing of allListings) { %>
         <a href="/listings/<%= listing._id %>" class="listing-link">
-          <div class="card col">
+          <div class="card col listing-card">
 
             <div class="listing-image-container">
               <img src="<%= listing.image %>" class="card-img-top" alt="listing_image" style="height: 20rem" />

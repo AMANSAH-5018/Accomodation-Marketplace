@@ -4,7 +4,7 @@ const Listing = require('../models/listing.js'); // Importing the Listing model
 
 const env = require("dotenv");
 env.config();
-const MONGO_URL = process.env.MONGO_URL+"/Wanderlust";
+const MONGO_URL = process.env.MONGO_URL+"/wanderlust";
 
 // const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 main().then(() => {
