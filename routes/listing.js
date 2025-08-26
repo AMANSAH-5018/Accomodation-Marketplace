@@ -45,7 +45,12 @@ router.get(
       let { id } = req.params;
       const listing = await Listing.findById(id).populate("reviews");
       if (!listing) {
-        return res.status(404).send("Listing not found.");
+        req.flash(
+          "error",
+          "Sorry, this listing has been deleted or no longer available."
+        );
+        return res.redirect("/listings");
+        // return res.status(404).send("This listing is no longer available.");
       }
       res.render("listings/show.ejs", { listing });
     } catch (err) {
@@ -54,38 +59,69 @@ router.get(
     }
   })
 );
+// router.get(
+//   "/:id",
+//   wrapAsync(async (req, res) => {
+//     try {
+//       let { id } = req.params;
+//       const listing = await Listing.findById(id).populate("reviews");
+//       if (!listing) {
+//         req.flash("error", "This listing does not exist.");
+//         // Add return here to stop execution
+//         return res.redirect("/listings");
+//       }
+//       res.render("listings/show.ejs", { listing });
+//     } catch (err) {
+//       console.error("Error fetching listing:", err);
+//       // Ensure the error response is also a single return
+//       return res.status(500).send("Error fetching listing.");
+//     }
+//   })
+// );
 
 // --------------------------------------------------------------------
 
 // Create Route for listing :-
+// router.post(
+//   "/",
+//   validateListing,
+//   wrapAsync(async (req, res, next) => {
+//     /* if (!req.body.listing) {
+//       throw new ExpressError(400, "Please send valid data for your listing.");
+//     } */
+//     let result = listingSchema.validateAsync(req.body);
+//     console.log(result);
+//     if (result.error) {
+//       throw new ExpressError(400, result.error.details[0].message);
+//     }
+//     const newListing = new Listing(req.body.listing);
+//     /*if (
+//       !newListing.description ||
+//       !newListing.title ||
+//       !newListing.price ||
+//       !newListing.location ||
+//       !newListing.country
+//     ) {
+//       throw new ExpressError(400, "All fields are required.");
+//     }*/
+//     await newListing.save();
+//     req.flash("success", "New Listing Created Successfully");
+//     res.redirect("/listings");
+//   })
+// );
+
 router.post(
   "/",
   validateListing,
   wrapAsync(async (req, res, next) => {
-    /* if (!req.body.listing) {
-      throw new ExpressError(400, "Please send valid data for your listing.");
-    } */
-    let result = listingSchema.validateAsync(req.body);
-    console.log(result);
-    if (result.error) {
-      throw new ExpressError(400, result.error.details[0].message);
-    }
     const newListing = new Listing(req.body.listing);
-    /*if (
-      !newListing.description ||
-      !newListing.title ||
-      !newListing.price ||
-      !newListing.location ||
-      !newListing.country
-    ) {
-      throw new ExpressError(400, "All fields are required.");
-    }*/
     await newListing.save();
+    req.flash("success", "New listing created successfully.");
     res.redirect("/listings");
   })
 );
 
-// Edit route for a listing :
+// Edit route for a listing :-
 router.get(
   "/:id/edit",
   wrapAsync(async (req, res) => {
@@ -93,7 +129,12 @@ router.get(
       let { id } = req.params;
       const listing = await Listing.findById(id);
       if (!listing) {
-        return res.status(404).send("Listing not found.");
+        req.flash(
+          "error",
+          "Sorry, this listing has been deleted or no longer available."
+        );
+        return res.redirect("/listings");
+        // return res.status(404).send("This listing does not found.");
       }
       res.render("listings/edit.ejs", { listing });
     } catch (err) {
@@ -122,6 +163,8 @@ router.put(
     if (!updatedListing) {
       return res.status(404).send("Listing not found.");
     }
+
+    req.flash("success", "Listing updated successfully.");
     res.redirect(`/listings/${updatedListing._id}`);
   })
 );
@@ -133,6 +176,7 @@ router.delete(
     let { id } = req.params;
     const deletedListing = await Listing.findByIdAndDelete(id);
     console.log(deletedListing);
+    req.flash("success", "Listing deleted successfully.");
     if (!deletedListing) {
       return res.status(404).send("Listing not found.");
     }

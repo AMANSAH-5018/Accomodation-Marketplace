@@ -5,10 +5,18 @@ const env = require("dotenv");
 const mongoose = require("mongoose");
 const path = require("path");
 const methodOverride = require("method-override");
-const ejsMate = require("ejs-mate"); // Importing ejs-mate for layout support
+const ejsMate = require("ejs-mate"); // importing ejs-mate for layout support
+const session = require("express-session"); // session is used to store the session time in website
+const flash = require("connect-flash"); // flash is used to display the message for user for a recent time only
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const { serialize, deserialize } = require("v8");
+
 const ExpressError = require("./utils/ExpressError.js");
-const listings = require("./routes/listing.js");
-const reviews = require("./routes/review.js");
+const User = require("./models/user.js");
+const listingRouter = require("./routes/listing.js");
+const reviewRouter = require("./routes/review.js");
+const userRouter = require("./routes/user.js");
 
 // Database connection setup :-
 // const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
@@ -40,11 +48,36 @@ app.use(methodOverride("_method")); // Middleware to support PUT and DELETE meth
 app.engine("ejs", ejsMate); // Using ejs-mate for layout support
 app.use(express.static(path.join(__dirname, "/public"))); // Serving static files from the public directory
 
+// Express Session with cookies setup :-
+const sessionOptions = {
+  secret: "mysupersecretcode",
+  resave: false,
+  saveUinitialized: true,
+  cookie: {
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+  },
+};
+
 // Creating routes :
 // Home Page route / root route :
 app.get("/", (req, res) => {
-  res.send("Hello, AMAN SAH");
+  res.send("Hello, I am root");
 });
+
+app.use(session(sessionOptions)); // acquire session with sessionOptions
+
+app.use(flash()); // using flash before the routes to display the flash messages
+
+// authentication initialization by packages :-
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+// use static serialize and deserialize of model for passport session support
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // Create Route :-
 /* app.post("/listings", async (req, res, next) => {
@@ -69,9 +102,26 @@ app.get("/", (req, res) => {
     }
  }); */
 
-// Acquiring routes for listings and reviews :-
-app.use("/listings", listings);
-app.use("/listings/:id/reviews", reviews);
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
+
+// authentication for demo user -
+app.get("/demo", async (req, res) => {
+  let fakeUser = new User({
+    email: "fakeuser@gmail.com",
+    username: "fake-user",
+  });
+  let registeredUser = await User.register(fakeUser, "helloworld");
+  res.send(registeredUser);
+});
+
+// acquiring routes for listings and reviews :-
+app.use("/listings", listingRouter); // taken the common routes from listings and reviews
+app.use("/listings/:id/reviews", reviewRouter);
+app.use("/", userRouter);
 
 // For unmatching / unavailable / unknown routes :-
 app.all("/{*path}", (req, res, next) => {
