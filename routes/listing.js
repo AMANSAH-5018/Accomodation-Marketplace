@@ -6,13 +6,16 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 const listingController = require("../controllers/listings.js");
 
+const multer = require("multer");
+const { storage } = require("../cloudCOnfig.js")
+const upload = multer({ storage });
 
 // Index Route for listings to show all listings :-
 router.route("/")
   .get(
-    wrapAsync(listingController.index)
-  ).post(
-    isLoggedIn,
+    wrapAsync(listingController.index))
+  .post(
+    isLoggedIn, upload.single("listing[image]"),
     validateListing,
     wrapAsync(listingController.createListing)
   );
@@ -28,7 +31,7 @@ router.route("/:id")
     wrapAsync(listingController.showListing)
   ).put(
     isLoggedIn,
-    isOwner,
+    isOwner, upload.single("listing[image]"),
     wrapAsync(listingController.updateListing)
   ).delete(
     isLoggedIn,
