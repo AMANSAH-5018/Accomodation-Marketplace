@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const env = require("dotenv");
+// const env = require("dotenv");
 
 const mongoose = require("mongoose");
 const path = require("path");
@@ -19,10 +19,10 @@ const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
 // Database connection setup :-
-// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 // MONGO_URL from .env file :
-env.config();
-const MONGO_URL = process.env.MONGO_URL + "/wanderlust";
+// env.config();
+// const MONGO_URL = process.env.MONGO_URL + "/wanderlust";
+const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 main()
   .then(() => {
     console.log("Database connection established.");
@@ -102,9 +102,11 @@ passport.deserializeUser(User.deserializeUser());
     }
  }); */
 
+// Middlewares for storing locals :-
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
+  res.locals.currUser = req.user;
   next();
 });
 

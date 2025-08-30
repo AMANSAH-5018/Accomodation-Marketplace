@@ -5,44 +5,30 @@ const app = express();
 const User = require("../models/user");
 const wrapAsync = require("../utils/wrapAsync");
 const passport = require("passport");
+const { saveRedirectUrl } = require("../middleware");
+const userController = require("../controllers/users");
 
-// signup route :-
-router.get("/signup", (req, res) => {
-  res.render("users/signup.ejs");
-});
+// signup Route :-
+router
+  .route("/signup")
+  .get(userController.renderSignupForm)
+  .post(wrapAsync(userController.userSignup));
 
-router.post(
-  "/signup",
-  wrapAsync(async (req, res) => {
-    try {
-      let { username, email, password } = req.body;
-      const newUser = { email, username };
-      const registeredUser = await User.register(newUser, password);
-      console.log(registeredUser);
-      req.flash("success", "Welcome to the Wanderlust");
-      res.redirect("/listings");
-    } catch (err) {
-      req.flash("error", "This username is already registered!");
-      res.redirect("/signup");
-    }
-  })
-);
+// login Route :-
+router
+  .route("/login")
+  .get(userController.renderuserLoginForm)
+  .post(
+    saveRedirectUrl,
+    passport.authenticate("local", {
+      // (passport.authenticate) is an inbuilt middleware used for authenticate requests
+      failureRedirect: "/login",
+      failureFlash: true,
+    }),
+    userController.userLogin
+  );
 
-// login route :-
-router.get("/login", (req, res) => {
-  res.render("users/login.ejs");
-});
-
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-    failureFlash: true,
-  }),
-  async (req, res) => {
-    req.flash("success", "Welcome back to wanderlust.");
-    res.redirect("/listings");
-  }
-); // (passport.authenticate) is a middleware used for authenticate requests
+// user LogOut Route :-
+router.get("/logout", userController.userLogout);
 
 module.exports = router;
