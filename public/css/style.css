@@ -147,3 +147,10 @@ body {
   padding-left: 0;
   padding-right: 0;
 }
+
+/* Map styling  */
+#map {
+  height: 350px;
+  width: 70vh;
+}
+
