@@ -11,7 +11,7 @@
   <script>
     // accssing public files in ejs
     const mapToken = "<%= process.env.MAP_TOKEN %>";
-    const coordinates = '<% - JSON.stringify(listing.geometry.coordinates) %>';
+    const listing = <%-JSON.stringify(listing)%>;
   </script>
 
   <body>
@@ -142,7 +142,7 @@
                   <% } %>
           </div>
 
-          <div class="col-7 offset-3 mb-3">
+          <div class="col-6 offset-3 mb-3">
             <h3>Where you will be</h3>
             <div id="map"></div>
           </div>

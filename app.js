@@ -11,6 +11,7 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate"); // importing ejs-mate for layout support
 const session = require("express-session"); // session is used to store the session time in website
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash"); // flash is used to display the message for user for a recent time only
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -24,9 +25,8 @@ const userRouter = require("./routes/user.js");
 
 // Database connection setup :-
 // MONGO_URL from .env file :
-// env.config();
-// const MONGO_URL = process.env.MONGO_URL + "/wanderlust";
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const dbUrl = process.env.MONGO_ATLAS_URL;
 main()
   .then(() => {
     console.log("Database connection established.");
@@ -36,7 +36,7 @@ main()
   });
 async function main() {
   try {
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(dbUrl);
     console.log("Connected to MongoDB successfully.");
   } catch (err) {
     console.error("Error connecting to MongoDB.", err);
@@ -52,8 +52,23 @@ app.use(methodOverride("_method")); // Middleware to support PUT and DELETE meth
 app.engine("ejs", ejsMate); // Using ejs-mate for layout support
 app.use(express.static(path.join(__dirname, "/public"))); // Serving static files from the public directory
 
+
+// Mongo Session store in database :-
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  crypto: {
+    secret: "mysupersecretcode"
+  },
+  touchAfter: 24 * 3600,
+});
+
+store.on("error", () => {
+  console.log("ERROR in MONGO SESSION STORE", err);
+});
+
 // Express Session with cookies setup :-
 const sessionOptions = {
+  store,
   secret: "mysupersecretcode",
   resave: false,
   saveUinitialized: true,
@@ -69,6 +84,8 @@ const sessionOptions = {
 // app.get("/", (req, res) => {
 //   res.send("Hello, I am root");
 // });
+
+
 
 app.use(session(sessionOptions)); // acquire session with sessionOptions
 
