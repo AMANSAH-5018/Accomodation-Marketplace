@@ -79,8 +79,8 @@ const sessionOptions = {
   },
 };
 
-// Creating routes :-
 
+// Creating routes :-
 // Home Page route / root route :
 app.get("/", (req, res) => {
   res.send("WELCOME TO THE WANDERLUST");
@@ -101,7 +101,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Create Route :-
+// Creating Routes :-
 /* app.post("/listings", async (req, res, next) => {
     let { title, description, price, image, location, country } = req.body;
     try {
@@ -163,7 +163,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error.ejs", { message });
 });
 
-// Creating connection building and port defining :
+// Creating connection building and port defining :-
 const port = 8080;
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

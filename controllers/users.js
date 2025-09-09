@@ -20,7 +20,7 @@ module.exports.userSignup = async (req, res) => {
             res.redirect("/listings");
         })
     } catch (err) {
-        req.flash("error", "This username is already registered!");
+        req.flash("error", "This username is already registered.");
         res.redirect("/signup");
     }
 }
@@ -44,7 +44,7 @@ module.exports.userLogout = (req, res) => {
         if (err) {
             return next(err);
         }
-        req.flash("success", "You logged out successfully.");
+        req.flash("success", "You successfully logged out.");
         res.redirect("/listings");
     });
 }

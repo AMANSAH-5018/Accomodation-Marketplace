@@ -116,6 +116,13 @@ body {
   opacity: 0.15;
 }
 
+/* GST details  */
+.tax-info {
+  font-size: 12px;
+  font-style: normal;
+  color: #443d3d;
+}
+
 /* New Page  */
 .add-btn {
   background-color: #fe424d !important;

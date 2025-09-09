@@ -100,7 +100,7 @@ module.exports.updateListing = async (req, res, next) => {
         listing.image = { url, filename };
         await listing.save();
     }
-    req.flash("success", "Listing updated successfully!");
+    req.flash("success", "Listing updated successfully.");
     res.redirect(`/listings/${id}`);
 }
 
@@ -113,6 +113,6 @@ module.exports.destroyListing = async (req, res, next) => {
     }
     let { id } = req.params;
     await Listing.findByIdAndUpdate(id, { ...req.body.listing });
-    req.flash("success", "Listing updated successfully!");
+    req.flash("success", "Listing updated successfully.");
     res.redirect(`/listings/${id}`);
 }
