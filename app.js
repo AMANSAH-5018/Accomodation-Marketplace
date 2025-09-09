@@ -79,7 +79,8 @@ const sessionOptions = {
   },
 };
 
-// Creating routes :
+// Creating routes :-
+
 // Home Page route / root route :
 app.get("/", (req, res) => {
   res.send("WELCOME TO THE WANDERLUST");
